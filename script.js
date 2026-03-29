@@ -110,6 +110,8 @@ async function getRiskCategory(age, bmiCategory, bpCategory, diabetes, cancer, a
   }
 }
 
+
+
 function displayResults(bmiData, bpData, riskData) {
   const resultValues = document.querySelectorAll('.result-value');
 

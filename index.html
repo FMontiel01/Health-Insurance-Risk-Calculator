@@ -9,8 +9,8 @@
   <body>
     <div class="container">
       <header class="page-header">
-        <h1>Health Insurance Risk Calculator</h1>
-        <p>Enter customer information to evaluate insurance risk.</p>
+        <h1>Health Risk Dashboard</h1>
+        <p>Analyze customer health data and calculate insurance risk instantly.</p>
       </header>
 
       <main>
@@ -52,8 +52,7 @@
           <section class="card">
             <h2>Blood Pressure</h2>
             <p class="section-text">
-              Select the customer’s systolic and diastolic blood pressure
-              values.
+              Select the customer’s systolic and diastolic blood pressure values.
             </p>
 
             <div class="chart-box">
@@ -106,9 +105,7 @@
           </section>
 
           <div class="button-row">
-            <button type="submit" class="btn btn-primary">
-              Calculate Risk
-            </button>
+            <button type="submit" class="btn btn-primary">Calculate Risk</button>
             <button type="reset" class="btn btn-secondary">Reset</button>
           </div>
         </form>
@@ -118,28 +115,28 @@
 
           <div class="results-grid">
             <div class="result-item">
-              <span class="result-label">BMI</span>
+              <span class="result-label">🧮 BMI</span>
               <span class="result-value">--</span>
             </div>
 
             <div class="result-item">
-              <span class="result-label">BMI Category</span>
+              <span class="result-label">📊 BMI Category</span>
               <span class="result-value">--</span>
             </div>
 
             <div class="result-item">
-              <span class="result-label">Blood Pressure Category</span>
+              <span class="result-label">❤️ Blood Pressure Category</span>
               <span class="result-value">--</span>
             </div>
 
             <div class="result-item">
-              <span class="result-label">Total Score</span>
+              <span class="result-label">📈 Total Score</span>
               <span class="result-value">--</span>
             </div>
 
-            <div class="result-item highlight">
-              <span class="result-label">Risk Category</span>
-              <span class="result-value">--</span>
+            <div class="result-item highlight risk-box" id="riskBox">
+              <span class="result-label">⚠️ Risk Category</span>
+              <span class="result-value" id="riskCategoryValue">--</span>
             </div>
           </div>
         </section>
