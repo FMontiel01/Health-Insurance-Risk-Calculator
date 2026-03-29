@@ -43,7 +43,7 @@ async function getBmi(feet, inches, weight) {
     console.log('Calling BMI API...');
 
     const response = await fetch(
-      `${API_BASE_URL}/bmi?feet=${feet}&inches=${inches}&weight=${weight}`
+      `${API_BASE_URL}/bmi?weightLbs=${weight}&heightFeet=${feet}&heightInches=${inches}`
     );
 
     if (!response.ok){
@@ -83,14 +83,18 @@ async function getBpCategory(systolic, diastolic) {
 async function getRiskCategory(age, bmiCategory, bpCategory, diabetes, cancer, alzheimers) {
   try {
      console.log('Calling Risk Category API...');
-
+     
+     const diabetesValue = diabetes ? 'yes' : 'no';
+     const cancerValue = cancer ? 'yes' : 'no';
+     const alzheimersValue = alzheimers ? 'yes' : 'no';
+     
      const response = await fetch(
       `${API_BASE_URL}/risk-category?age=${age}` +
-      `&bmiCategory=${encodeURIComponent(bmiCategory)}` +
-      `&bpCategory=${encodeURIComponent(bpCategory)}` +
-      `&diabetes=${diabetes}` +
-      `&cancer=${cancer}` +
-      `&alzheimers=${alzheimers}`
+      `&bmi=${encodeURIComponent(bmiCategory)}` +
+      `&bp=${encodeURIComponent(bpCategory)}` +
+      `&diabetes=${diabetesValue}` +
+      `&cancer=${cancerValue}` +
+      `&alzheimers=${alzheimersValue}`
     );
 
     if (!response.ok) {
@@ -112,8 +116,8 @@ function displayResults(bmiData, bpData, riskData) {
   resultValues[0].textContent = bmiData.bmi ?? '--';
   resultValues[1].textContent = bmiData.category ?? '--';
   resultValues[2].textContent = bpData.category ?? '--';
-  resultValues[3].textContent = riskData.score ?? '--';
-  resultValues[4].textContent = riskData.category ?? '--';
+  resultValues[3].textContent = riskData.totalPoints ?? '--';
+  resultValues[4].textContent = riskData.riskCategory ?? '--';
 }
 
 form.addEventListener('submit', async function (event) {
