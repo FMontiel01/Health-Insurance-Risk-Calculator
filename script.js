@@ -1,5 +1,8 @@
 'use strict';
 
+const API_BASE_URL = 'https://health-insurance-risk-calculator-server-ade2ccbmetgxeber.canadacentral-01.azurewebsites.net/api';
+
+
 // reusable function to fill dropdowns
 function fillSelect(id, start, end) {
   const select = document.getElementById(id);
@@ -22,6 +25,18 @@ fillSelect('diastolic', 40, 140);
 
 
 const form = document.getElementById('riskForm');
+const resetBtn = document.querySelector('button[type="reset"]');
+
+async function wakeServer(){
+  try {
+    console.log('Calling ping API...');
+    const response = await fetch(`${API_BASE_URL}/ping`);
+    const data = await response.json();
+    console.log('Ping API response received:', data);
+  } catch (error) {
+    console.error('Ping API error:', error);
+  }
+}
 
 form.addEventListener('submit', function (event) {
   event.preventDefault();
@@ -62,12 +77,13 @@ function showFakeResults() {
   document.querySelectorAll('.result-value')[4].textContent = 'high risk';
 }
 
-const resetBtn = document.querySelector('button[type="reset"]');
 
 resetBtn.addEventListener('click', function () {
   const results = document.querySelectorAll('.result-value');
 
   results.forEach(r => r.textContent = '--');
 });
+
+wakeServer();
 
 
