@@ -38,7 +38,85 @@ async function wakeServer(){
   }
 }
 
-form.addEventListener('submit', function (event) {
+async function getBmi(feet, inches, weight) {
+  try {
+    console.log('Calling BMI API...');
+
+    const response = await fetch(
+      `${API_BASE_URL}/bmi?feet=${feet}&inches=${inches}&weight=${weight}`
+    );
+
+    if (!response.ok){
+      throw new Error(`BMI API failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('BMI API response received:', data);
+    return data;
+  } catch (error) {
+    console.error('BMI API error:', error);
+    throw error;
+  }
+}
+
+async function getBpCategory(systolic, diastolic) {
+  try {
+    console.log('Calling BP Category API...');
+
+    const response = await fetch(
+      `${API_BASE_URL}/bp-category?systolic=${systolic}&diastolic=${diastolic}`
+    );
+
+    if (!response.ok) {
+      throw new Error(`BP Category API failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('BP Category API response received:', data);
+    return data;
+  } catch (error) {
+    console.error('BP Category API error:', error);
+    throw error;
+  }
+}
+
+async function getRiskCategory(age, bmiCategory, bpCategory, diabetes, cancer, alzheimers) {
+  try {
+     console.log('Calling Risk Category API...');
+
+     const response = await fetch(
+      `${API_BASE_URL}/risk-category?age=${age}` +
+      `&bmiCategory=${encodeURIComponent(bmiCategory)}` +
+      `&bpCategory=${encodeURIComponent(bpCategory)}` +
+      `&diabetes=${diabetes}` +
+      `&cancer=${cancer}` +
+      `&alzheimers=${alzheimers}`
+    );
+
+    if (!response.ok) {
+      throw new Error(`Risk Category API failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('Risk Category API response received:', data);
+    return data;
+  } catch (error) {
+    console.error('Risk Category API error:', error);
+    throw error;
+  }
+}
+
+function displayResults(bmiData, bpData, riskData) {
+  const resultValues = document.querySelectorAll('.result-value');
+
+  resultValues[0].textContent = bmiData.bmi ?? '--';
+  resultValues[1].textContent = bmiData.category ?? '--';
+  resultValues[2].textContent = bpData.category ?? '--';
+  resultValues[3].textContent = riskData.score ?? '--';
+  resultValues[4].textContent = riskData.category ?? '--';
+}
+
+form.addEventListener('submit', async function (event) {
   event.preventDefault();
 
   const age = Number(document.getElementById('age').value);
@@ -52,8 +130,7 @@ form.addEventListener('submit', function (event) {
   const cancer = document.getElementById('cancer').checked;
   const alzheimers = document.getElementById('alzheimers').checked;
 
-  // for now just log everything
-  console.log({
+  console.log('Form submitted with values:', {
     age,
     feet,
     inches,
@@ -65,18 +142,25 @@ form.addEventListener('submit', function (event) {
     alzheimers
   });
 
-  // TEMPORARY RESULTS (so UI works)
-  showFakeResults();
+  try {
+    const bmiData = await getBmi(feet, inches, weight);
+    const bpData = await getBpCategory(systolic, diastolic);
+
+    const riskData = await getRiskCategory(
+      age,
+      bmiData.category,
+      bpData.category,
+      diabetes,
+      cancer,
+      alzheimers
+    );
+
+    displayResults(bmiData, bpData, riskData);
+  } catch (error) {
+    console.error('Error calculating risk:', error);
+    alert('There was a problem connecting to the API server.');
+  }
 });
-
-function showFakeResults() {
-  document.querySelectorAll('.result-value')[0].textContent = '27.8';
-  document.querySelectorAll('.result-value')[1].textContent = 'overweight';
-  document.querySelectorAll('.result-value')[2].textContent = 'stage 1';
-  document.querySelectorAll('.result-value')[3].textContent = '60';
-  document.querySelectorAll('.result-value')[4].textContent = 'high risk';
-}
-
 
 resetBtn.addEventListener('click', function () {
   const results = document.querySelectorAll('.result-value');
